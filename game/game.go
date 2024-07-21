@@ -18,6 +18,7 @@ func NewGame() *Game {
 	for i := range grid {
 		grid[i] = make([]bool, SCREEN_WIDTH/CELL_WIDTH)
 	}
+	// TODO: make a better cell input
 	grid[len(grid)/2-1][len(grid[0])/2-1] = true
 	grid[len(grid)/2-1][len(grid[0])/2] = true
 	grid[len(grid)/2-1][len(grid[0])/2+1] = true
