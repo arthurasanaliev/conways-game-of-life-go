@@ -4,7 +4,10 @@ import (
 	"image/color"
 	"time"
 
+	"golang.org/x/image/font/basicfont"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -33,6 +36,14 @@ func (g *Game) Update() error {
 			gridY := y / CELL_HEIGHT
 			if inBounds(gridX, gridY) {
 				g.grid[gridY][gridX] = true
+			}
+		}
+		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+			x, y := ebiten.CursorPosition()
+			gridX := x / CELL_WIDTH
+			gridY := y / CELL_HEIGHT
+			if inBounds(gridX, gridY) {
+				g.grid[gridY][gridX] = false
 			}
 		}
 		if ebiten.IsKeyPressed(ebiten.KeyEnter) {
@@ -76,6 +87,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 				vector.DrawFilledRect(screen, float32(x*CELL_WIDTH), float32(y*CELL_HEIGHT), float32(CELL_WIDTH), float32(CELL_HEIGHT), yellowColor, false)
 			}
 		}
+	}
+	if !g.started {
+		text.Draw(screen, "Press <Enter> to Play!", basicfont.Face7x13, 430, 980, color.White)
 	}
 }
 
