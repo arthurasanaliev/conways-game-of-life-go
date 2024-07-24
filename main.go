@@ -10,7 +10,7 @@ import (
 func main() {
 	g := game.NewGame()
 
-	ebiten.SetWindowSize(game.WINDOW_WIDTH, game.WINDOW_HEIGHT)
+	ebiten.SetWindowSize(game.SCREEN_WIDTH, game.SCREEN_HEIGHT)
 	ebiten.SetWindowTitle("Conway's Game of Life")
 
 	if err := ebiten.RunGame(g); err != nil {
