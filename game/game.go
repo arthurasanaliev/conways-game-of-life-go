@@ -71,7 +71,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	yellowColor := color.RGBA{255, 255, 0, 255}
 	for y, rows := range g.grid {
-		for x, _ := range rows {
+		for x := range rows {
 			if g.grid[y][x] {
 				vector.DrawFilledRect(screen, float32(x*CELL_WIDTH), float32(y*CELL_HEIGHT), float32(CELL_WIDTH), float32(CELL_HEIGHT), yellowColor, false)
 			}
