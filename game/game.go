@@ -11,34 +11,43 @@ import (
 type Game struct {
 	grid       [][]bool
 	lastUpdate time.Time
+	started    bool
 }
 
 func NewGame() *Game {
-	grid := make([][]bool, SCREEN_HEIGHT/CELL_HEIGHT)
-	for i := range grid {
-		grid[i] = make([]bool, SCREEN_WIDTH/CELL_WIDTH)
+	grid := make([][]bool, GRID_HEIGHT)
+	for i := 0; i < GRID_HEIGHT; i++ {
+		grid[i] = make([]bool, GRID_WIDTH)
 	}
-	// TODO: make a better cell input
-	grid[len(grid)/2-1][len(grid[0])/2-1] = true
-	grid[len(grid)/2-1][len(grid[0])/2] = true
-	grid[len(grid)/2-1][len(grid[0])/2+1] = true
-	grid[len(grid)/2][len(grid[0])/2-1] = true
-	grid[len(grid)/2][len(grid[0])/2+1] = true
-	grid[len(grid)/2+1][len(grid[0])/2-1] = true
-	grid[len(grid)/2+1][len(grid[0])/2+1] = true
 	return &Game{
-		grid: grid,
+		grid:    grid,
+		started: false,
 	}
 }
 
 func (g *Game) Update() error {
+	if !g.started {
+		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+			x, y := ebiten.CursorPosition()
+			gridX := x / CELL_WIDTH
+			gridY := y / CELL_HEIGHT
+			if inBounds(gridX, gridY) {
+				g.grid[gridY][gridX] = true
+			}
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyEnter) {
+			g.started = true
+			g.lastUpdate = time.Now()
+		}
+		return nil
+	}
 	currentTime := time.Now()
 	if currentTime.Sub(g.lastUpdate).Seconds() >= UPDATE_INTERVAL {
 		g.lastUpdate = currentTime
 
-		out := make([][]bool, len(g.grid))
+		out := make([][]bool, GRID_HEIGHT)
 		for i := range out {
-			out[i] = make([]bool, len(g.grid[i]))
+			out[i] = make([]bool, GRID_WIDTH)
 		}
 		for y, rows := range g.grid {
 			for x := range rows {
@@ -90,4 +99,8 @@ func countNeighbors(grid [][]bool, x, y int) int {
 		}
 	}
 	return count
+}
+
+func inBounds(x, y int) bool {
+	return x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT
 }
